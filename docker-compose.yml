@@ -1,0 +1,93 @@
+# =============================================================================
+# EduBot — full-stack docker-compose
+#
+# What this stands up:
+#   • backend   — FastAPI, RAG, ERP connector, WhatsApp webhook
+#   • ollama    — Local LLM runtime (auto-pulls llama3.1:8b + nomic-embed-text)
+#   • frontend  — Vite/React app served by nginx, /api reverse-proxied to backend
+#
+# Quick start:
+#   cp backend/.env.example backend/.env       # adjust if needed
+#   docker compose up --build
+#   # then visit http://localhost:8080
+#
+# To use OpenAI/Anthropic instead of Ollama, set LLM_PROVIDER=openai (or
+# anthropic) plus the relevant API key in backend/.env, and you can remove the
+# `ollama` service or simply leave it idle — it won't be called.
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Local LLM runtime
+  # ---------------------------------------------------------------------------
+  ollama:
+    image: ollama/ollama:latest
+    container_name: edubot-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    restart: unless-stopped
+    # Pre-pull the chat + embedding models on first boot, then run server.
+    entrypoint: ["/bin/sh", "-c"]
+    command: >
+      "ollama serve &
+       SERVER_PID=$$!
+       sleep 5
+       echo '⏬ pulling llama3.1:8b (chat) — this is large, first run only'
+       ollama pull llama3.1:8b || true
+       echo '⏬ pulling nomic-embed-text (embeddings)'
+       ollama pull nomic-embed-text || true
+       echo '✅ ollama ready'
+       wait $$SERVER_PID"
+    healthcheck:
+      test: ["CMD", "ollama", "list"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ---------------------------------------------------------------------------
+  # FastAPI backend
+  # ---------------------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: edubot-backend
+    env_file:
+      - ./backend/.env
+    environment:
+      # Override service hosts so the backend talks to siblings by name.
+      OLLAMA_BASE_URL: "http://ollama:11434"
+    volumes:
+      # Persist ingested vector store + demo SQLite DB
+      - ./backend/app/data:/app/app/data
+      - chroma_db:/app/app/chroma_db
+    ports:
+      - "8000:8000"
+    depends_on:
+      ollama:
+        condition: service_started
+    restart: unless-stopped
+
+  # ---------------------------------------------------------------------------
+  # Frontend (nginx serving the Vite build, with /api proxy to backend)
+  # ---------------------------------------------------------------------------
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+      args:
+        VITE_API_BASE_URL: /api
+    container_name: edubot-frontend
+    ports:
+      - "8090:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+# ---------------------------------------------------------------------------
+volumes:
+  ollama_models:
+  chroma_db:

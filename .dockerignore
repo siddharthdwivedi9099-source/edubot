@@ -1,0 +1,16 @@
+**/__pycache__
+**/*.pyc
+**/.pytest_cache
+**/node_modules
+**/dist
+**/.env
+**/.env.local
+**/.git
+**/.gitignore
+**/.venv
+**/venv
+**/.DS_Store
+**/chroma_db
+backend/app/data/*.db-journal
+docs/_build
+*.log

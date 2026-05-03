@@ -1,0 +1,46 @@
+# ── Core API ─────────────────────────────────────────────
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+pydantic==2.9.2
+pydantic-settings==2.6.1
+python-multipart==0.0.12
+python-dotenv==1.0.1
+
+# ── LLM & RAG (LangChain ecosystem) ──────────────────────
+langchain==0.3.7
+langchain-core==0.3.15
+langchain-community==0.3.5
+langchain-openai==0.2.5
+langchain-anthropic==0.2.4
+langchain-ollama==0.2.0
+langchain-text-splitters==0.3.2
+
+# ── Vector store (local-first; pgvector optional) ────────
+chromadb==0.5.18
+langchain-chroma==0.1.4
+sentence-transformers==3.2.1
+
+# ── SQL ERP connectors ───────────────────────────────────
+sqlalchemy==2.0.35
+aiosqlite==0.20.0
+pymysql==1.1.1
+psycopg2-binary==2.9.10
+pyodbc==5.2.0          # MSSQL support (optional at runtime)
+
+# ── WhatsApp / Twilio ────────────────────────────────────
+twilio==9.3.7
+
+# ── Guardrails & safety ──────────────────────────────────
+better-profanity==0.7.0
+presidio-analyzer==2.2.355
+presidio-anonymizer==2.2.355
+
+# ── Voice (optional, server-side STT) ────────────────────
+
+# ── Utilities ────────────────────────────────────────────
+httpx==0.27.2
+tenacity==9.0.0
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+slowapi==0.1.9         # rate limiting
+loguru==0.7.2

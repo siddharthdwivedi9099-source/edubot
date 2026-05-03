@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+
+# Env files
+.env
+.env.local
+*.local
+
+# Data — keep examples but not user runtime data
+backend/app/chroma_db/
+backend/app/data/*.db
+backend/app/data/*.db-journal
+# but DO commit the generated KB (small enough, useful for Docker)
+!backend/app/data/kb_articles.json
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
