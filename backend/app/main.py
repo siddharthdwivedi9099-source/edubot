@@ -59,7 +59,7 @@ def create_app() -> FastAPI:
 
     # Routers
     app.include_router(chat.router, prefix="/chat", tags=["chat"])
-app.include_router(admin_seed.router, prefix=\"/admin\", tags=[\"admin\"])
+app.include_router(admin_seed.router, prefix="/admin", tags=["admin"])
     app.include_router(kb.router, prefix="/kb", tags=["knowledge-base"])
     app.include_router(erp.router, prefix="/erp", tags=["erp"])
     app.include_router(whatsapp.router, prefix="/whatsapp", tags=["whatsapp"])
