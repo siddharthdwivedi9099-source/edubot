@@ -31,3 +31,5 @@ Thumbs.db
 # Logs
 *.log
 logs/
+backend/app/data/demo_school.db
+backend/app/data/demo_school.db
