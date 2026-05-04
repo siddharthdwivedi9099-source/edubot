@@ -15,7 +15,7 @@ from slowapi.util import get_remote_address
 from loguru import logger
 
 from app.config import get_settings
-from app.api import chat, kb, erp, whatsapp
+from app.api import admin_seed, chat, kb, erp, whatsapp
 from app.core.erp_connector import is_erp_connected
 from app.core.rag import collection_size
 from app.models.schemas import HealthResponse
@@ -59,6 +59,7 @@ def create_app() -> FastAPI:
 
     # Routers
     app.include_router(chat.router, prefix="/chat", tags=["chat"])
+app.include_router(admin_seed.router, prefix=\"/admin\", tags=[\"admin\"])
     app.include_router(kb.router, prefix="/kb", tags=["knowledge-base"])
     app.include_router(erp.router, prefix="/erp", tags=["erp"])
     app.include_router(whatsapp.router, prefix="/whatsapp", tags=["whatsapp"])
