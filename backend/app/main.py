@@ -15,7 +15,7 @@ from slowapi.util import get_remote_address
 from loguru import logger
 
 from app.config import get_settings
-from app.api import auth, admin_seed, chat, kb, erp, whatsapp
+from app.api import admin_seed, auth, chat, kb, erp, whatsapp
 from app.core.erp_connector import is_erp_connected
 from app.core.rag import collection_size
 from app.models.schemas import HealthResponse
@@ -57,10 +57,10 @@ def create_app() -> FastAPI:
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-    # Routers
-    app.include_router(chat.router, prefix="/chat", tags=["chat"])
+    # Routers — auth first so /auth/login is registered before any guarded route
     app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(admin_seed.router, prefix="/admin", tags=["admin"])
+    app.include_router(chat.router, prefix="/chat", tags=["chat"])
     app.include_router(kb.router, prefix="/kb", tags=["knowledge-base"])
     app.include_router(erp.router, prefix="/erp", tags=["erp"])
     app.include_router(whatsapp.router, prefix="/whatsapp", tags=["whatsapp"])
