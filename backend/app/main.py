@@ -58,12 +58,12 @@ def create_app() -> FastAPI:
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
     # Routers — auth first so /auth/login is registered before any guarded route
-    app.include_router(auth.router, prefix="/auth", tags=["auth"])
+app.include_router(auth.router, prefix="/auth", tags=["auth"])
 app.include_router(admin_seed.router, prefix="/admin", tags=["admin"])
-    app.include_router(chat.router, prefix="/chat", tags=["chat"])
-    app.include_router(kb.router, prefix="/kb", tags=["knowledge-base"])
-    app.include_router(erp.router, prefix="/erp", tags=["erp"])
-    app.include_router(whatsapp.router, prefix="/whatsapp", tags=["whatsapp"])
+app.include_router(chat.router, prefix="/chat", tags=["chat"])
+app.include_router(kb.router, prefix="/kb", tags=["knowledge-base"])
+app.include_router(erp.router, prefix="/erp", tags=["erp"])
+app.include_router(whatsapp.router, prefix="/whatsapp", tags=["whatsapp"])
 
     @app.get("/", tags=["meta"])
     async def root():
